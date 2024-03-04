@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.camunda.bpm.getstarted.loanapproval.mapper.CamundaMapper">
+
+	<select id="getCamundaHistoryList" resultType="org.camunda.bpm.getstarted.loanapproval.model.response.CamundaHisDTO">
+        <![CDATA[
+			SELECT task_def_key_ as taskDefKey,
+			       proc_def_key_ as procDefKey,
+			       proc_def_id_ as procDefId,
+			       proc_inst_id_ as procInstId,
+			       name_ as name,
+			       start_time_ as startTime,
+			       end_time_ as endTime
+			FROM act_hi_taskinst
+		]]>
+        <where>
+            <if test="procDefKey != null and procDefKey != '' ">
+                AND proc_def_key_ = #{procDefKey}
+            </if>
+            <if test="procDefId != null and procDefId != '' ">
+                AND proc_def_id_ = #{procDefId}
+            </if>
+            <if test="procInstId != null and procInstId != '' ">
+                AND proc_inst_id_ = #{procInstId}
+            </if>
+        </where>
+        ORDER BY start_time_ DESC
+    </select>
+
+    <select id="getLastestHistory" resultType="org.camunda.bpm.getstarted.loanapproval.model.response.CamundaHisDTO">
+        SELECT * FROM (
+        <![CDATA[
+			SELECT task_def_key_ as taskDefKey,
+			       proc_def_key_ as procDefKey,
+			       proc_def_id_ as procDefId,
+			       proc_inst_id_ as procInstId,
+			       name_ as name,
+			       start_time_ as startTime,
+			       end_time_ as endTime
+			FROM act_hi_taskinst
+		]]>
+        <where>
+            <if test="procDefKey != null and procDefKey != '' ">
+                AND proc_def_key_ = #{procDefKey}
+            </if>
+            <if test="procDefId != null and procDefId != '' ">
+                AND proc_def_id_ = #{procDefId}
+            </if>
+            <if test="procInstId != null and procInstId != '' ">
+                AND proc_inst_id_ = #{procInstId}
+            </if>
+        </where>
+        ORDER BY start_time_ DESC
+        ) WHERE 1 >= ROWNUM
+    </select>
+	
+</mapper>
